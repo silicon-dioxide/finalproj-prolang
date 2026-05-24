@@ -1,0 +1,6 @@
+let count = 3;
+
+while (count > 0) {
+  console.log("count:", count);
+  count -= 1;
+}
