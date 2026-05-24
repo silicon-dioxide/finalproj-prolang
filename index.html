@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Language Analysis JS Index</title>
+  <style>
+    :root {
+      --bg: #f5efe4;
+      --panel: #fffaf0;
+      --ink: #1e1a16;
+      --muted: #6d6257;
+      --line: #d8cbb8;
+      --accent: #5a64d8;
+      --accent-soft: #f2d0b5;
+      --shadow: 0 18px 45px rgba(77, 52, 33, 0.12);
+      --mono: "Cascadia Code", "Fira Code", Consolas, monospace;
+      --sans: Helvetica, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(181, 84, 47, 0.16), transparent 28%),
+        linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
+    }
+
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px 80px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 250, 240, 0.96), rgba(247, 235, 219, 0.96));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #6f2f18;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 850px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    .note {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--accent);
+      background: rgba(181, 84, 47, 0.08);
+      border-radius: 10px;
+      color: #5c493c;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 18px;
+    }
+
+    .section-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 18px 20px 12px;
+      border-bottom: 1px solid rgba(216, 203, 184, 0.7);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(242, 232, 217, 0.75));
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .section-head p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .example-list {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .example {
+      border: 1px solid rgba(216, 203, 184, 0.85);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      padding: 14px;
+    }
+
+    .example strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.98rem;
+    }
+
+    .path,
+    .command {
+      font-family: var(--mono);
+      font-size: 0.84rem;
+      line-height: 1.5;
+      word-break: break-word;
+      color: #4f433a;
+      background: rgba(90, 100, 216, 0.08);
+      border: 1px solid rgba(90, 100, 216, 0.28);
+      border-radius: 10px;
+      padding: 10px;
+      margin: 8px 0 0;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #fffaf3;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: transform 120ms ease, opacity 120ms ease;
+    }
+
+    .button.secondary {
+      background: rgba(90, 100, 216, 0.08);
+      color: var(--accent);
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      opacity: 0.92;
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 24px 14px 56px;
+      }
+
+      .hero {
+        padding: 22px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="section-grid" id="sections"></div>
+  </div>
+
+  <script>
+    const sections = [
+      {
+        key: "A",
+        title: "A. Data Types",
+        blurb: "Primitive values, arrays, and objects.",
+        number: "1",
+        base: "language-analysis/2.1.Concepts-Implementation/A-DataTypes",
+        examples: [
+          ["1", "number_data_type.js"],
+          ["2", "string_data_type.js"],
+          ["3", "boolean_data_type.js"],
+          ["4", "array_mutable_collection.js"],
+          ["5", "object_key_value_data.js"],
+        ],
+      },
+      {
+        key: "B",
+        title: "B. Expressions and Assignment Statements",
+        blurb: "Arithmetic, comparisons, logic, and conditional expressions.",
+        number: "2",
+        base: "language-analysis/2.1.Concepts-Implementation/B-ExpressionsAndAssignmentStatements",
+        examples: [
+          ["1", "arithmetic_expression.js"],
+          ["2", "comparison_expression.js"],
+          ["3", "boolean_logic_expression.js"],
+          ["4", "compound_assignment.js"],
+          ["5", "ternary_expression.js"],
+        ],
+      },
+      {
+        key: "C",
+        title: "C. Statement-Level Control Structures",
+        blurb: "Conditionals, loops, and loop control flow.",
+        number: "3",
+        base: "language-analysis/2.1.Concepts-Implementation/C-StatementLevelControlStructures",
+        examples: [
+          ["1", "if_elif_else_statement.js"],
+          ["2", "for_loop_with_range.js"],
+          ["3", "for_loop_over_list.js"],
+          ["4", "while_loop.js"],
+          ["5", "break_and_continue.js"],
+        ],
+      },
+      {
+        key: "D",
+        title: "D. Subprograms",
+        blurb: "Functions, returns, defaults, recursion, and array mutation.",
+        number: "4",
+        base: "language-analysis/2.1.Concepts-Implementation/D-Subprograms",
+        examples: [
+          ["1", "function_with_parameters_and_return.js"],
+          ["2", "function_without_explicit_return.js"],
+          ["3", "function_with_default_parameter.js"],
+          ["4", "recursive_function.js"],
+          ["5", "passing_array_to_function.js"],
+        ],
+      },
+      {
+        key: "E",
+        title: "E. Abstract Data Types and Encapsulation",
+        blurb: "Classes, controlled access, and private state.",
+        number: "5",
+        base: "language-analysis/2.1.Concepts-Implementation/E-AbstractDataTypesAndEncapsulation",
+        examples: [
+          ["1", "class_with_instance_properties.js"],
+          ["2", "getter_and_setter_methods.js"],
+          ["3", "getter_and_setter_syntax.js"],
+          ["4", "private_field.js"],
+          ["5", "bank_account_adt.js"],
+        ],
+      },
+      {
+        key: "F",
+        title: "F. Object-Oriented Programming",
+        blurb: "Classes, inheritance, overriding, and polymorphism.",
+        number: "6",
+        base: "language-analysis/2.1.Concepts-Implementation/F-ObjectOrientedProgramming",
+        examples: [
+          ["1", "basic_class_and_object_creation.js"],
+          ["2", "inheritance.js"],
+          ["3", "method_overriding.js"],
+          ["4", "polymorphism.js"],
+          ["5", "base_class_contract.js"],
+        ],
+      },
+      {
+        key: "G",
+        title: "G. Concurrency",
+        blurb: "Callbacks, promises, async/await, and shared async state.",
+        number: "7",
+        base: "language-analysis/2.1.Concepts-Implementation/G-Concurrency",
+        examples: [
+          ["1", "timed_asynchronous_task.js"],
+          ["2", "function_based_callback_task.js"],
+          ["3", "async_function_with_await.js"],
+          ["4", "multiple_async_tasks.js"],
+          ["5", "shared_state_in_async_flow.js"],
+        ],
+      },
+      {
+        key: "H",
+        title: "H. Exception and Event Handling",
+        blurb: "Errors, cleanup, and callback-style event behavior.",
+        number: "8",
+        base: "language-analysis/2.1.Concepts-Implementation/H-ExceptionAndEventHandling",
+        examples: [
+          ["1", "basic_try_catch.js"],
+          ["2", "try_catch_finally.js"],
+          ["3", "raising_custom_exception.js"],
+          ["4", "handling_multiple_exception_types.js"],
+          ["5", "simple_event_style_callback.js"],
+        ],
+      },
+      {
+        key: "2.2",
+        title: "2.2 Performance & Memory Analysis",
+        blurb: "Linear search versus keyed lookup with runtime-level metrics.",
+        number: "2.2",
+        base: "language-analysis/2.2.Performance-Memory-Analysis",
+        examples: [
+          ["1", "linear_search.js"],
+          ["2", "dictionary_lookup.js"],
+        ],
+      },
+      {
+        key: "4",
+        title: "4. Code Smell & Refactoring Reflection",
+        blurb: "Original versus cleaned-up transaction handling.",
+        number: "4",
+        base: "language-analysis/4.Code-Smell-Refactoring",
+        examples: [
+          ["1", "smelly_atm_handler.js"],
+          ["2", "clean_implementation.js"],
+        ],
+      },
+    ];
+
+    const container = document.getElementById("sections");
+
+    function createSection(section) {
+      const card = document.createElement("section");
+      card.className = "section-card";
+
+      const head = document.createElement("div");
+      head.className = "section-head";
+      head.innerHTML = `<h2>${section.title}</h2><p>${section.blurb}</p>`;
+      card.appendChild(head);
+
+      const list = document.createElement("div");
+      list.className = "example-list";
+
+      for (const [index, file] of section.examples) {
+        const example = document.createElement("article");
+        example.className = "example";
+
+        const relativePath = `${section.base}/${file}`;
+        const command = `node ${relativePath.replaceAll("/", "\\")}`;
+
+        example.innerHTML = `
+          <strong>${section.number}.${index} - ${file}</strong>
+          <div class="path">${relativePath}</div>
+          <div class="command">${command}</div>
+          <div class="actions">
+            <a class="button" href="${relativePath}" target="_blank" rel="noopener noreferrer">Open File</a>
+            <button class="button secondary" type="button" data-copy="${command.replace(/"/g, "&quot;")}">Copy Command</button>
+          </div>
+        `;
+
+        list.appendChild(example);
+      }
+
+      card.appendChild(list);
+      return card;
+    }
+
+    for (const section of sections) {
+      container.appendChild(createSection(section));
+    }
+
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest("[data-copy]");
+      if (!button) {
+        return;
+      }
+
+      const command = button.getAttribute("data-copy");
+      try {
+        await navigator.clipboard.writeText(command);
+        const original = button.textContent;
+        button.textContent = "Copied";
+        setTimeout(() => {
+          button.textContent = original;
+        }, 1000);
+      } catch {
+        button.textContent = "Copy failed";
+      }
+    });
+  </script>
+</body>
+</html>
