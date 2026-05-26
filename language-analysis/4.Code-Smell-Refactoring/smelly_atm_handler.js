@@ -4,7 +4,10 @@ function atmSystem(users, username, action, amount = 0) {
       console.log("Current balance:", users[username].balance);
       return users[username].balance;
     } else if (action === "deposit") {
-      if (amount > 0) {
+      if (!Number.isInteger(amount)) {
+        console.log("Deposit amount must be an integer");
+        return false;
+      } else if (amount > 0) {
         users[username].balance = users[username].balance + amount;
         console.log("Deposit successful");
         console.log("New balance:", users[username].balance);
@@ -14,7 +17,10 @@ function atmSystem(users, username, action, amount = 0) {
         return false;
       }
     } else if (action === "withdraw") {
-      if (amount > 0) {
+      if (!Number.isInteger(amount)) {
+        console.log("Withdrawal amount must be an integer");
+        return false;
+      } else if (amount > 0) {
         if (users[username].balance >= amount) {
           users[username].balance = users[username].balance - amount;
           console.log("Withdrawal successful");
@@ -28,12 +34,6 @@ function atmSystem(users, username, action, amount = 0) {
         console.log("Invalid withdrawal amount");
         return false;
       }
-    } else if (action === "transfer") {
-      console.log("Transfer feature not implemented");
-      return undefined;
-    } else {
-      console.log("Unknown action");
-      return undefined;
     }
   } else {
     console.log("User not found");
@@ -48,4 +48,8 @@ const users = {
 console.log("Original implementation");
 atmSystem(users, "cedric", "balance");
 atmSystem(users, "cedric", "deposit", 500);
-atmSystem(users, "cedric", "withdraw", 200);
+atmSystem(users, "cedric", "withdraw", 111200);
+atmSystem(users, "cedric", "deposit", "sss");
+atmSystem(users, "cedric", "withdraw", 10.5);
+atmSystem(users, "cedric", "deposit", 0);
+atmSystem(users, "cedric", "withdraw", 0);
